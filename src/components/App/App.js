@@ -52,8 +52,6 @@ class App extends Component {
       });
       this.setState({characters});
     }
-    let i;
-    let g;
   }
 
   render() {

@@ -1,0 +1,19 @@
+.bar {
+  fill: rebeccapurple;
+
+  &:hover {
+    fill: adjust_hue(rebeccapurple, 80);
+  }
+}
+
+.axis {
+
+}
+
+.xAxis path {
+  display: none;
+}
+
+.yAxis {
+
+}

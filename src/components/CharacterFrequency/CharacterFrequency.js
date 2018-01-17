@@ -19,11 +19,22 @@ class CharacterFrequency extends Component {
     if (this.margin && this.props.data !== nextProps.data) {
       this.renderChart(nextProps.data);
     }
-    let i;
   }
 
   shouldComponentUpdate(nextProps) {
-    return false;
+    return !!nextProps && nextProps.width !== this.props.width;
+  }
+
+  componentDidUpdate() {
+    console.log('updating');
+    this.clearChart();
+    this.setupChart(this.props.data);
+    this.renderChart(this.props.data);
+  }
+
+  clearChart() {
+    let svg = d3.select("svg");
+    svg.selectAll('*').remove();
   }
 
   setupChart(data) {
@@ -85,6 +96,8 @@ class CharacterFrequency extends Component {
   }
 
   render() {
+    console.log(this.props.width);
+    console.log(this.props.height);
     return (
       <svg
         ref={svg => this.svg = svg}

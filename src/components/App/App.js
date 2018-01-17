@@ -15,7 +15,10 @@ class App extends Component {
     this.state = {
       characters: [],
       text: 'nice',
+      width: 700,
+      height: 450
     };
+    this.maxWidth = 1127;
     this.handleChange = this.handleChange.bind(this);
   }
 
@@ -25,7 +28,10 @@ class App extends Component {
       return d;
     }, (err, data) => {
       if (err) throw err;
-      this.setState({characters: data});
+      this.setState({
+        characters: data,
+        width: window.innerWidth > this.maxWidth ? this.maxWidth : window.innerWidth
+      });
     });
   }
 
@@ -68,7 +74,7 @@ class App extends Component {
             <TextInput value={this.state.value} onChange={this.handleChange}/>
           </Grid.Row>
           <Grid.Row centered={true}>
-            <CharacterFrequency data={this.state.characters} width={700} height={450}/>
+            <CharacterFrequency data={this.state.characters} width={this.state.width} height={this.state.height}/>
           </Grid.Row>
         </Grid>
       </Container>

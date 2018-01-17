@@ -1,10 +1,13 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import { Container, Divider, Grid, Header } from 'semantic-ui-react'
 
 import * as d3 from 'd3';
 
 import CharacterFrequency from "../CharacterFrequency/CharacterFrequency";
 import TextInput from "../TextInput/TextInput";
+
+import styles from './App.scss';
 
 class App extends Component {
   constructor(props) {
@@ -56,11 +59,19 @@ class App extends Component {
 
   render() {
     return (
-      <div>
-        <h3>Text Frequency Analyzer</h3>
-        <TextInput value={this.state.value} onChange={this.handleChange}/>
-        <CharacterFrequency data={this.state.characters} width={700} height={450}/>
-      </div>
+      <Container className={styles.container}>
+        <Grid centered>
+          <Grid.Row>
+            <Header className={styles.header} as="h1" textAlign="center">Text Frequency Analyzer</Header>
+          </Grid.Row>
+          <Grid.Row centered>
+            <TextInput value={this.state.value} onChange={this.handleChange}/>
+          </Grid.Row>
+          <Grid.Row centered={true}>
+            <CharacterFrequency data={this.state.characters} width={700} height={450}/>
+          </Grid.Row>
+        </Grid>
+      </Container>
     );
   }
 }

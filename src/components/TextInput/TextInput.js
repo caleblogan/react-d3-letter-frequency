@@ -1,10 +1,13 @@
 import React from 'react';
+import { Form } from 'semantic-ui-react';
 
 import styles from './TextInput.scss';
 
 const TextInput = ({value, onChange}) => {
   return (
-    <textarea value={value} onChange={onChange}/>
+    <Form onSubmit={(e) => e.preventDefault()}>
+      <Form.TextArea className={styles.textArea} value={value} onChange={onChange} label="Text to Analyze"/>
+    </Form>
   );
 };
 

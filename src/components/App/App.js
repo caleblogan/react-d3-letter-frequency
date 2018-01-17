@@ -17,25 +17,42 @@ class App extends Component {
   }
 
   componentDidMount() {
-    let i;
     d3.tsv("letter_freq.tsv", function(d) {
       d.frequency = +d.frequency;
       return d;
     }, (err, data) => {
       if (err) throw err;
       this.setState({characters: data});
-      setTimeout(() => {
-        this.setState((prevState, props) => {
-          let newChars = [...prevState.characters];
-          newChars[0] = {frequency: newChars[0].frequency + .003, letter: newChars[0].letter};
-          return {characters: newChars}
-        });
-      }, 500);
     });
   }
 
+  calcLetterFrequencies(text) {
+    let letterCounts = Array(26).fill(0);
+    text.split('').map(l => {
+      l = l.toLowerCase();
+      let idx = l.charCodeAt(0) - 97;
+      if (idx >= 0 || idx < 27) {
+        letterCounts[idx] += 1;
+      }
+    });
+    let letterSum = letterCounts.reduce((accum, cur) => cur + accum);
+    return letterCounts.map(l => l / letterSum);
+  }
+
   handleChange(e) {
-    this.setState({text: e.target.text});
+    this.setState({text: e.target.value});
+    if (e.target.value) {
+      let freqs = this.calcLetterFrequencies(e.target.value);
+      let characters = [];
+      freqs.forEach((freq, i) => {
+        characters.push({
+          frequency: freq,
+          letter: i + 97
+        })
+      });
+      console.log('chars:', characters);
+      this.setState({characters});
+    }
   }
 
   render() {

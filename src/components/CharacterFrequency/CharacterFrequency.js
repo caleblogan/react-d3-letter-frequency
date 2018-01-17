@@ -20,9 +20,13 @@ class CharacterFrequency extends Component {
     console.log('receiving props');
     console.log('prev:', this.props.data);
     console.log('next:', nextProps.data);
-    if (this.props.data !== nextProps.data) {
+    if (nextProps.data && !this.margin) {
+      this.setupChart(nextProps.data);
+    }
+    if (this.margin && this.props.data !== nextProps.data) {
       this.renderChart(nextProps.data);
     }
+    let i;
   }
 
   shouldComponentUpdate(nextProps) {
@@ -34,45 +38,62 @@ class CharacterFrequency extends Component {
     console.log('unmounting');
   }
 
+  setupChart(data) {
+    let svg = d3.select("svg");
+    this.margin = {top: 20, right: 20, bottom: 30, left: 40};
+    this.width = +svg.attr("width") - this.margin.left - this.margin.right;
+    this.height = +svg.attr("height") - this.margin.top - this.margin.bottom;
+
+    this.x = d3.scaleBand().rangeRound([0, this.width]).padding(0.1);
+    this.y = d3.scaleLinear().rangeRound([this.height, 0]);
+
+    this.g = svg.append("g")
+      .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
+
+    this.x.domain(data.map(function(d) { return d.letter; }));
+    this.y.domain([0, d3.max(data, function(d) { return d.frequency; })]);
+
+    this.g.append("g")
+        .attr("class", [styles.axis, styles.xAxis].join(' '))
+        .attr('transform', `translate(0, ${this.height})`)
+        .call(d3.axisBottom(this.x));
+
+    this.g.append("g")
+      .attr("class", [styles.axis, styles.yAxis].join(' '))
+      .call(d3.axisLeft(this.y).ticks(10, '%'));
+  }
+
   renderChart(data) {
     console.log('rendering chart');
 
-    let svg = d3.select("svg"),
-      margin = {top: 20, right: 20, bottom: 30, left: 40},
-      width = +svg.attr("width") - margin.left - margin.right,
-      height = +svg.attr("height") - margin.top - margin.bottom;
+    this.y = d3.scaleLinear()
+      .domain([0, d3.max(data, function(d) { return d.frequency; })])
+      .rangeRound([this.height, 0]);
 
-    let x = d3.scaleBand().rangeRound([0, width]),//.padding(0.1),
-      y = d3.scaleLinear().rangeRound([height, 0]);
-
-    let g = svg.append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
+    this.g.select(`.${styles.yAxis}`)
+      .transition()
+      .duration(2000)
+      .call(d3.axisLeft(this.y)
+        .ticks(10, '%'));
 
 
-    x.domain(data.map(function(d) { return d.letter; }));
-    y.domain([0, d3.max(data, function(d) { return d.frequency; })]);
-
-    g.append("g")
-        .attr("class", [styles.axis, styles.xAxis].join(' '))
-        .attr('transform', `translate(0, ${height})`)
-        .call(d3.axisBottom(x));
-
-    g.append("g")
-      .attr("class", [styles.axis, styles.yAxis].join(' '))
-      .call(d3.axisLeft(y).ticks(10, '%'));
-
-    let bars = g.selectAll(`.${styles.bar}`)
+    let bars = this.g.selectAll(`.${styles.bar}`)
       .data(data);
 
+
+    let l;
     bars
       .enter().append("rect")
-      .attr("class", styles.bar)
-      .attr("x", function(d) { return x(d.letter); })
-      .attr("width", x.bandwidth())
+        .attr("class", styles.bar)
+        .attr("x", d => this.x(d.letter))
+        .attr("width", this.x.bandwidth())
+        .attr("y", d => this.height)
+        .attr("height", d => 0)
       .merge(bars)
-      .attr("y", function(d) { return y(d.frequency); })
-      .attr("height", function(d) { return height - y(d.frequency); });
+        .transition()
+        .duration(1000)
+        .attr("y", d => this.y(d.frequency))
+        .attr("height", d => this.height - this.y(d.frequency));
 
     bars.exit().remove();
   }

@@ -1,7 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 const localCss = new ExtractTextPlugin('styles-local.css');
 const globalCss = new ExtractTextPlugin('styles-global.css');
@@ -31,40 +31,27 @@ const config = {
         }
       },
       {
-        test: /^((?!\.bootstrap|bootstrap-theme).)*\.scss$/,
+        test: /\.scss$/,
         use: localCss.extract({
           fallback: "style-loader",
           use: ["css-loader?modules=true&localIdentName=[name]__[local]__[hash:base64:5]", 'postcss-loader', 'sass-loader']
         })
       },
       {
-        test: /(\.bootstrap\.css$|bootstrap-theme.css|bootstrap.css)/,
+        test: /\.css$/,
         use: globalCss.extract({
           fallback: "style-loader",
           use: ["css-loader", 'postcss-loader', 'sass-loader']
         })
       },
-      // {
-      //   test: /\.(jpe?g|png|gif|svg)$/i,
-      //   loaders: [
-      //       'file-loader?hash=sha512&digest=hex&name=[hash].[ext]',
-      //       'image-webpack-loader?bypassOnDebug&optimizationLevel=7&interlaced=false'
-      //   ]
-      // }
     ]
   },
   plugins: [
     localCss,
     globalCss,
     new webpack.NamedModulesPlugin(),
-    new webpack.HotModuleReplacementPlugin()
-    // new HtmlWebpackPlugin({
-    //   title: 'D3',
-    // }),
-    // new HtmlWebpackPlugin({
-    //   title: 'Crypto',
-    //   filename: '200.html',
-    // }),
+    new webpack.HotModuleReplacementPlugin(),
+    new UglifyJsPlugin(),
   ]
 };
 

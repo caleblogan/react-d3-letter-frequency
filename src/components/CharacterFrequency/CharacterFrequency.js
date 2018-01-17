@@ -26,7 +26,6 @@ class CharacterFrequency extends Component {
   }
 
   componentDidUpdate() {
-    console.log('updating');
     this.clearChart();
     this.setupChart(this.props.data);
     this.renderChart(this.props.data);
@@ -63,8 +62,6 @@ class CharacterFrequency extends Component {
   }
 
   renderChart(data) {
-    console.log('rendering chart');
-
     this.y = d3.scaleLinear()
       .domain([0, d3.max(data, function(d) { return d.frequency; })])
       .rangeRound([this.height, 0]);
@@ -96,8 +93,6 @@ class CharacterFrequency extends Component {
   }
 
   render() {
-    console.log(this.props.width);
-    console.log(this.props.height);
     return (
       <svg
         ref={svg => this.svg = svg}

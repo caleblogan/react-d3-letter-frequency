@@ -3,7 +3,7 @@ Small example app integrating d3 with react. React will only render the componen
 on mount then let d3 update the dom.
 
 # Demo
-vacuous-beam.surge.sh
+http://vacuous-beam.surge.sh/
 
 # Setup
 - clone repo

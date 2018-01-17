@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
@@ -6,7 +7,7 @@ const localCss = new ExtractTextPlugin('styles-local.css');
 const globalCss = new ExtractTextPlugin('styles-global.css');
 
 const config = {
-  entry: ['babel-polyfill', './src/index.js'],
+  entry: ['babel-polyfill', 'react-hot-loader/patch', './src/index.js'],
   output: {
     path: path.resolve(__dirname, './dist/'),
     publicPath: '/',
@@ -14,6 +15,8 @@ const config = {
   },
   devServer: {
     historyApiFallback: true,
+    contentBase: './dist',
+    hot: true
   },
   module: {
     rules: [
@@ -23,7 +26,7 @@ const config = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['env', 'react']
+            presets: [['env', {"modules": false}], 'react']
           }
         }
       },
@@ -53,6 +56,8 @@ const config = {
   plugins: [
     localCss,
     globalCss,
+    new webpack.NamedModulesPlugin(),
+    new webpack.HotModuleReplacementPlugin()
     // new HtmlWebpackPlugin({
     //   title: 'D3',
     // }),

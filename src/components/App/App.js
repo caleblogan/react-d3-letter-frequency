@@ -57,7 +57,7 @@ class App extends Component {
   render() {
     return (
       <div>
-        <h3>Heya</h3>
+        <h3>Text Frequency Analyzer</h3>
         <TextInput value={this.state.value} onChange={this.handleChange}/>
         <CharacterFrequency data={this.state.characters} width={700} height={450}/>
       </div>

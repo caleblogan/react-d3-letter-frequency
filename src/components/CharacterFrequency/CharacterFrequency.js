@@ -12,14 +12,7 @@ class CharacterFrequency extends Component {
     super(props);
   }
 
-  componentDidMount() {
-    console.log('mounting');
-  }
-
   componentWillReceiveProps(nextProps) {
-    console.log('receiving props');
-    console.log('prev:', this.props.data);
-    console.log('next:', nextProps.data);
     if (nextProps.data && !this.margin) {
       this.setupChart(nextProps.data);
     }
@@ -30,12 +23,7 @@ class CharacterFrequency extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    console.log('should we update');
     return false;
-  }
-
-  componentWillUnmount() {
-    console.log('unmounting');
   }
 
   setupChart(data) {
@@ -80,8 +68,6 @@ class CharacterFrequency extends Component {
     let bars = this.g.selectAll(`.${styles.bar}`)
       .data(data);
 
-
-    let l;
     bars
       .enter().append("rect")
         .attr("class", styles.bar)

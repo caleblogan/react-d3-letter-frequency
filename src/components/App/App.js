@@ -31,12 +31,12 @@ class App extends Component {
     text.split('').map(l => {
       l = l.toLowerCase();
       let idx = l.charCodeAt(0) - 97;
-      if (idx >= 0 || idx < 27) {
+      if (idx >= 0 && idx < 27) {
         letterCounts[idx] += 1;
       }
     });
     let letterSum = letterCounts.reduce((accum, cur) => cur + accum);
-    return letterCounts.map(l => l / letterSum);
+    return letterSum ? letterCounts.map(l => l / letterSum) : letterCounts;
   }
 
   handleChange(e) {
@@ -50,9 +50,10 @@ class App extends Component {
           letter: i + 97
         })
       });
-      console.log('chars:', characters);
       this.setState({characters});
     }
+    let i;
+    let g;
   }
 
   render() {
